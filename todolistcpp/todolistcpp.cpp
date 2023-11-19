@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include<string>
 #include<vector>
@@ -33,45 +32,26 @@ public:
     void setDescription(std::string str) { description = str; }
 
 };
+void ReadTask(std::string filename, std::list<Task>& Tasks);
+void WriteTask(std::string filenamem, std::list<Task>& Tasks);
 int main()
 {
 
     srand(static_cast<unsigned>(time(nullptr)));
-    std::list<Task> Tasks;
+
     std::list<Task>::iterator it;
-    Tasks.clear();
+
     int choice = ADD, input_id;
     std::string input_task;
+    std::list<Task> Tasks;
+    Tasks.clear();
     Task temp;
-    std::fstream myfile;
-    myfile.open("tasks1.txt", std::ios::in);
-    char ch;
+    std::string FILE_NAME = "tasks.txt";
+    ReadTask(FILE_NAME, Tasks);
 
 
-    if (myfile.is_open()) {
 
-        while (!(myfile.eof())) {
-            Task task;
-            int id;
-            std::string description;
-            bool iscomplete;
-            myfile >> id;
-            char separator;
-            myfile >> separator;
-            std::getline(myfile, description, '|');
-            myfile >> std::boolalpha >> iscomplete;
-            task.setId(id);
-            task.setDescription(description);
-            task.markcompleted(iscomplete);
-            Tasks.push_back(task);
-            if (!(myfile >> id)) {
-                break;
 
-            }
-
-        }
-        myfile.close();
-    }
     while (choice != QUIT) {
         system("cls");
         std::cout << std::endl;
@@ -120,15 +100,49 @@ int main()
         }
 
     }
-    myfile.open("tasks1.txt", std::ios::out);
+    WriteTask(FILE_NAME, Tasks);
+
+
+}
+
+void ReadTask(std::string filename, std::list<Task>& Tasks) {
+    std::fstream myfile(filename, std::ios::in);
+
+    if (myfile.is_open()) {
+        while (!myfile.eof()) {
+            Task task;
+            int id;
+            std::string description;
+            bool iscomplete;
+            char separator;
+
+            if (!(myfile >> id)) { break; }
+
+            myfile >> separator;
+            std::getline(myfile, description, '|');
+            myfile >> iscomplete;
+
+            task.setId(id);
+            task.setDescription(description);
+            task.markcompleted(iscomplete);
+
+            Tasks.push_back(task);
+        }
+
+        myfile.close();
+    }
+}
+
+
+void WriteTask(std::string filename, std::list<Task>& Tasks) {
+    std::fstream myfile;
+    myfile.open(filename, std::ios::app);
+    std::list<Task>::iterator it;
+
     for (it = Tasks.begin(); it != Tasks.end(); it++) {
 
         myfile << it->getid() << " | " << it->getdescription() << " | " << it->iscompleted() << std::endl;
 
     }
     myfile.close();
-
 }
-
-
-
