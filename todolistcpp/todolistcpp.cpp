@@ -4,11 +4,11 @@
 #include <list>
 #include <ctime>
 #include <fstream>
-enum Choices {
-    QUIT, ADD, COMPLETE
+enum Choices { // Rename int values for choices so no magical numbers appear
+    QUIT, ADD, COMPLETE 
 };
 
-class Task {
+class Task { // main class of the programm, task contains id, description and status of completion
 private:
     int id;
     std::string description;
@@ -26,18 +26,21 @@ public:
     int getid() { return id; }
     std::string getdescription() { return description; }
     bool iscompleted() { return done; }
+    // Functions for accesing private variables and changing them 
 
-    void markcompleted(bool var) { done = var; }
+    void markcompleted(bool var) { done = var; } 
     void setId(int n) { id = n; }
-    void setDescription(std::string str) { description = str; }
+    void setDescription(std::string str) { description = str; } 
+    // Functions for accesing private variables and changing them 
 
 };
-void ReadTask(std::string filename, std::list<Task>& Tasks);
+void ReadTask(std::string filename, std::list<Task>& Tasks); 
 void WriteTask(std::string filenamem, std::list<Task>& Tasks);
+//Prototype for functions described below
 int main()
 {
 
-    srand(static_cast<unsigned>(time(nullptr)));
+    srand(static_cast<unsigned>(time(nullptr))); // Setting seed of rand%
 
     std::list<Task>::iterator it;
 
@@ -48,6 +51,7 @@ int main()
     Task temp;
     std::string FILE_NAME = "tasks.txt";
     ReadTask(FILE_NAME, Tasks);
+    // Describing basic variables ued later
 
 
 
@@ -64,7 +68,7 @@ int main()
 
             std::cout << it->getid() << " | " << it->getdescription() << " | " << iscompletedstr
                 << std::endl;
-        }
+        } // Outputing listof tasks
         if (Tasks.empty()) {
             std::cout << "Add your first task!\n";
         }
@@ -75,13 +79,13 @@ int main()
         switch (choice) {
         case QUIT:
             std::cout << "Have a great day\n";
-            break;
+            break; // Quit the programm
         case ADD:
             std::cout << "Enter a description of a task:\n";
             std::cin.ignore();
             getline(std::cin, input_task);
             Tasks.push_back(Task(input_task));
-            continue;
+            continue; // Add the task by inputing description
 
         case COMPLETE:
             std::cout << "Enter id of a task you want to complete:\n";
@@ -92,20 +96,20 @@ int main()
                     it->markcompleted(true);
                     break;
                 }
-            }
+            } // Marking task as complete
             continue;
         default:
             std::cout << "Error, wrong input";
-            continue;
-        }
+            continue; // If anything of the above
+        } // PRoccesing the choices
 
     }
-    WriteTask(FILE_NAME, Tasks);
+    WriteTask(FILE_NAME, Tasks); // Calling func to write user-inputed information into file
 
 
 }
 
-void ReadTask(std::string filename, std::list<Task>& Tasks) {
+void ReadTask(std::string filename, std::list<Task>& Tasks) { // Function to read data from file  
     std::fstream myfile(filename, std::ios::in);
 
     if (myfile.is_open()) {
@@ -134,7 +138,7 @@ void ReadTask(std::string filename, std::list<Task>& Tasks) {
 }
 
 
-void WriteTask(std::string filename, std::list<Task>& Tasks) {
+void WriteTask(std::string filename, std::list<Task>& Tasks) { // Function that writes data into the file 
     std::fstream myfile;
     myfile.open(filename, std::ios::app);
     std::list<Task>::iterator it;
